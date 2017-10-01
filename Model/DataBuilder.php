@@ -83,9 +83,17 @@ class DataBuilder
         $payload = $this->dataBuilderBase->initBaseData(self::EVENT_TYPE);
         $payload['customer'] = $this->getCustomerData($order);
         $payload['cart'] = $this->dataBuilderCart->getCartData($quote, $order);
-        $payload['cart']['billing_address'] = $this->dataBuilderAddress->getBillingAddressesFromOrder($order);
-        $payload['cart']['shipping_address'] = $this->dataBuilderAddress->getShippingAddressesFromOrder($order);
         $payload['cart']['cart_items'] = $this->dataBuilderCart->getCartItemsData($quote);
+
+        $billingAddress = $this->dataBuilderAddress->getBillingAddressesFromOrder($order);
+        if ($billingAddress) {
+            $payload['cart']['billing_address'] = $billingAddress;
+        }
+
+        $shippingAddress = $this->dataBuilderAddress->getShippingAddressesFromOrder($order);
+        if ($shippingAddress) {
+            $payload['cart']['shipping_address'] = $shippingAddress;
+        }
 
         $transport = new DataObject(['order' => $order, 'payload' => $payload]);
         $this->eventDispatcher->dispatch('buzzi_publish_cart_purchase_payload', ['transport' => $transport]);
