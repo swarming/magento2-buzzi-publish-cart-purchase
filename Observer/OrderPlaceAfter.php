@@ -26,26 +26,26 @@ class OrderPlaceAfter implements \Magento\Framework\Event\ObserverInterface
     private $dataBuilder;
 
     /**
-     * @var \Buzzi\Publish\Helper\ExceptsMarketing
+     * @var \Buzzi\Publish\Helper\AcceptsMarketing
      */
-    private $exceptsMarketingHelper;
+    private $acceptsMarketingHelper;
 
     /**
      * @param \Buzzi\Publish\Model\Config\Events $configEvents
      * @param \Buzzi\Publish\Api\QueueInterface $queue
      * @param \Buzzi\PublishCartPurchase\Model\DataBuilder $dataBuilder
-     * @param \Buzzi\Publish\Helper\ExceptsMarketing|null $exceptsMarketingHelper
+     * @param \Buzzi\Publish\Helper\AcceptsMarketing|null $acceptsMarketingHelper
      */
     public function __construct(
         \Buzzi\Publish\Model\Config\Events $configEvents,
         \Buzzi\Publish\Api\QueueInterface $queue,
         \Buzzi\PublishCartPurchase\Model\DataBuilder $dataBuilder,
-        \Buzzi\Publish\Helper\ExceptsMarketing $exceptsMarketingHelper = null
+        \Buzzi\Publish\Helper\AcceptsMarketing $acceptsMarketingHelper = null
     ) {
         $this->configEvents = $configEvents;
         $this->queue = $queue;
         $this->dataBuilder = $dataBuilder;
-        $this->exceptsMarketingHelper = $exceptsMarketingHelper ?: ObjectManager::getInstance()->get(\Buzzi\Publish\Helper\ExceptsMarketing::class);
+        $this->acceptsMarketingHelper = $acceptsMarketingHelper ?: ObjectManager::getInstance()->get(\Buzzi\Publish\Helper\AcceptsMarketing::class);
     }
 
     /**
@@ -59,7 +59,7 @@ class OrderPlaceAfter implements \Magento\Framework\Event\ObserverInterface
         $storeId = $order->getStoreId();
 
         if (!$this->configEvents->isEventEnabled(DataBuilder::EVENT_TYPE, $storeId)
-            || !$this->exceptsMarketingHelper->isExcepts(DataBuilder::EVENT_TYPE, $storeId)
+            || !$this->acceptsMarketingHelper->isAccepts(DataBuilder::EVENT_TYPE, $storeId)
         ) {
             return;
         }
