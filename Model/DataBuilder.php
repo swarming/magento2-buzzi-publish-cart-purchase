@@ -81,6 +81,7 @@ class DataBuilder
         $quote = $this->cartRepository->get($order->getQuoteId());
 
         $payload = $this->dataBuilderBase->initBaseData(self::EVENT_TYPE);
+        $payload['status'] = $order->getStatus();
         $payload['customer'] = $this->getCustomerData($order);
         $payload['cart'] = $this->dataBuilderCart->getCartData($quote, $order);
         $payload['cart']['cart_items'] = $this->dataBuilderCart->getCartItemsData($quote);
